@@ -232,20 +232,44 @@
         function displayTasks(dataArray) {
             tasksContainer.style.display = "block";
 
-            var taskdatamap = new Map();
+            if (dataArray.length == 0) {
+                taskbody.innerHTML = "";
+                // Create Error Row and exit the function
+                var errorRow = document.createElement("tr");
+                errorRow.classList.add("task-row-error");
+                var errorCell = document.createElement("td");
+                // maximum colspan
+                errorCell.colSpan = "6";
+                errorCell.classList.add("text-center");
+                errorCell.innerHTML = "No Records found";
+                errorRow.appendChild(errorCell);
+                taskbody.appendChild(errorRow);
+                taskRowError = document.querySelector(".task-row-error");
+
+                errorRow.appendChild(errorCell);
+                taskbody.appendChild(errorRow);
+                console.log("No tasks found");
+
+                return;
+            } else {
+                var datacount = dataArray.length;
+                console.log(dataArray, datacount + " tasks found in displayTasks");
+            }
+
+            var displaytaskdatamap = new Map();
 
             dataArray.forEach(function (task) {
-                taskdatamap.set(task.id, task);
+                displaytaskdatamap.set(task.id, task);
             });
 
 
-            console.log(taskdatamap, "taskdatamap");
+            console.log(displaytaskdatamap, "displaytaskdatamap");
             // replace the dummy tr td data with real data 
 
 
 
             taskbody.innerHTML = "";
-            for (let [key, value] of taskdatamap) {
+            for (let [key, value] of displaytaskdatamap) {
                 console.log(key, "key", value, "values");
 
                 // Create a new row
@@ -360,6 +384,7 @@
 
 
         function searchTask() {
+            var found = false;
             var searchValue = searchInput.value;
             console.log(searchValue, "searchValue");
             if (localStorage.getItem("taskData")) {
@@ -375,6 +400,7 @@
             for (let [Mapkey, value] of taskdatamap) {
                 for (let key in value) {
                     if (value[key] == searchValue) {
+                        found = true;
                         searchResultIds.push(Mapkey);
                     }
                 }
@@ -385,7 +411,13 @@
             })
             searchDataArray = searchResults;
             console.log(searchDataArray, "searchDataArray");
-            displayTasks(searchDataArray);
+            if (found) {
+                displayTasks(searchDataArray);
+            }
+            else {
+                // send empty
+                displayTasks([]);
+            }
         }
 
 
