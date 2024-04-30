@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>To Do List</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- create a to do list using ES6 only, no jQuery, and save load and display data from local storage -->
+    <!-- use localStorage to save and load data -->
+
+    <div class="todo-list-container container">
+        <div class="heading-container text-center my-4">
+            <h1>To Do List</h1>
+        </div>
+        <div class="add-or-search-list-input-container">
+            <div class="row">
+                <div class="col-md-12 btns-container d-flex justify-content-center">
+                    <button type="button" onclick="showAddTaskForm()" id="addNewTaskBtn"
+                        class="btn btn-primary mx-2">Add New Task</button>
+                    <button type="button" onclick="showSearchTaskForm()" id="searchTaskBtn"
+                        class="btn btn-secondary mx-2">Search Task</button>
+                </div>
+                <div class="filter-container col-md-12">
+                    <p>Filter by: </p>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <select class="form-control" id="filterStatus" onchange="filterTasks()">
+                                <option value="Status">Status</option>
+                                <option value="all">All</option>
+                                <option value="completed">Completed</option>
+                                <option value="pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" id="filterSort" onchange="filterTasks()">
+                                <option value="Status">Sort</option>
+                                <option value="latest">Latest</option>
+                                <option value="oldest">Oldest</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <select class="form-control" id="filterPriority" onchange="filterTasks()">
+                                <option value="Status">Priority</option>
+                                <option value="high">High</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="tasks-container" id="tasksContainer">
+            <div class="search-container" style="display: none;">
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" id="searchBtn"
+                                onclick="searchTask()">Search</button>
+                            <button class="btn btn-outline-secondary" id="clearBtn"
+                                onclick="clearSearch()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="add-new-container" style="display: none;">
+                <p>Add New Task</p>
+                <form id="addNewTaskForm" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label for="assignedTo">Assigned to:</label>
+                        <input type="text" id="assignedTo" class="form-control" placeholder="Assigned to" required />
+                        <p class="field-error" style="display: none;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskName">Task Name:</label>
+                        <input type="text" id="taskName" class="form-control" placeholder="Task Name" required />
+                        <p class="field-error" style="display: none;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="dueDate">Due Date:</label>
+                        <input type="date" id="dueDate" class="form-control" required />
+                        <p class="field-error" style="display: none;"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="pending" value="pending"
+                                checked>
+                            <label class="form-check-label" for="pending">Pending</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="status" id="completed" value="completed">
+                            <label class="form-check-label" for="completed">Completed</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="priority">Priority:</label>
+                        <select id="priority" class="form-control">
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary" id="addTaskBtn"
+                            onclick="addTask(this)">Add</button>
+                        <button type="button" class="btn btn-secondary" id="cancelBtn"
+                            onclick="cancelTask()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Tasks will be dynamically added here -->
+            <div class="view-results-container">
+                <div class="task-view" id="taskView">
+                    <table id="tasksTable" class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Task Name</th>
+                                <th>Assigned To</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                                <th>Priority</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Task rows will be dynamically added here -->
+                            <tr class="task-row-1">
+                                <td class="task-name"></td>
+                                <td class="task-assigned-to"></td>
+                                <td class="task-due-date"></td>
+                                <td class="task-status"></td>
+                                <td class="task-priority"></td>
+                                <td class="task-actions">
+                                    <button class="btn btn-primary edit-btn" onclick="editTask()">Edit</button>
+                                    <button class="btn btn-success update-btn" onclick="updateTask()">Update</button>
+                                    <button class="btn btn-danger delete-btn" onclick="deleteTask()">Delete</button>
+                                </td>
+                            </tr>
+                            <tr class="task-row-error">
+                                <td colspan="6" class="text-center">Error Message</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        //Create Vairables
+
+        // Buttons for Add New Task and Search
+        var addNewTaskBtn = document.getElementById("addNewTaskBtn");
+        var searchTaskBtn = document.getElementById("searchTaskBtn");
+
+        // Variable for filters
+        var filterStatus = document.getElementById("filterStatus");
+        var filterSort = document.getElementById("filterSort");
+        var filterPriority = document.getElementById("filterPriority");
+
+        // Variables for Search Form
+        var searchInput = document.getElementById("searchInput");
+        var searchBtn = document.getElementById("searchBtn");
+        var clearBtn = document.getElementById("clearBtn");
+
+        // Variables for Add New Task Form
+        var addNewTaskForm = document.getElementById("addNewTaskForm");
+        var taskName = document.getElementById("taskName");
+        var assignedTo = document.getElementById("assignedTo");
+        var dueDate = document.getElementById("dueDate");
+        var statusPending = document.getElementById("pending");
+        var statusCompleted = document.getElementById("completed");
+        var priority = document.getElementById("priority");
+
+        var editBtn = document.getElementsByClassName("edit-btn")[0];
+        var completeBtn = document.getElementsByClassName("complete-btn")[0];
+        var deleteBtn = document.getElementsByClassName("delete-btn")[0];
+
+        var tasksContainer = document.getElementById("tasksContainer");
+        var tasksTable = document.getElementById("tasksTable");
+        var taskView = document.getElementById("taskView");
+
+        var taskRowSingle = document.querySelector(".task-row-1");
+        var taskRowMultiple = document.querySelectorAll(".task-row-1");
+
+        var taskData = {
+            taskName: "",
+            assignedTo: "",
+            dueDate: "",
+            status: "",
+            priority: ""
+
+        };
+        var taskDataMap = new Map();
+        var taskDataArray = [];
+        var taskbody = document.querySelector("tbody");
+        var datamapsize = null;
+        var tasksingle = [];
+        var tasksinglesize = null;
+
+
+        var taskRowError = document.querySelector(".task-row-error td");
+
+        var taskdatamap = new Map();
+
+        // If results in LocalStorage, get them and display them
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("taskData")) {
+                taskDataArray = JSON.parse(localStorage.getItem("taskData"));
+                displayTasks(taskDataArray);
+            }
+        });
+        // Define Functions
+
+        function cancelTask() {
+            addNewTaskForm.style.display = "none";
+            document.querySelector('.add-new-container').style.display = "block";
+            // clear form
+            addNewTaskForm.reset();
+        }
+
+        function displayTasks(dataArray) {
+            tasksContainer.style.display = "block";
+
+            dataArray.forEach(function (task) {
+                taskdatamap.set(task.id, task);
+            });
+
+
+            // console.log(taskdatamap, "taskdatamap");
+            // replace the dummy tr td data with real data 
+
+
+
+            taskbody.innerHTML = "";
+            for (let [key, value] of taskdatamap) {
+                console.log(key, value);
+
+                // Create a new row
+                var row = document.createElement("tr");
+                var rowClass = "task-row-" + (key);
+                row.classList.add(rowClass);
+
+                var cellActionBtns = document.createElement("td");
+                var cellActionBtnsClass = "task-actions";
+                cellActionBtns.classList.add(cellActionBtnsClass);
+
+                var cellEditBtn = document.createElement("button");
+                var cellEditBtnClass = "btn btn-primary edit-btn";
+
+                cellEditBtnClass.split(' ').forEach(function (className) {
+                    cellEditBtn.classList.add(className);
+                })
+                cellEditBtn.innerHTML = "Edit";
+
+                var cellUpdateBtn = document.createElement("button");
+                var cellUpdateBtnClass = "btn btn-success update-btn";
+                cellUpdateBtnClass.split(' ').forEach(function (className) {
+                    cellUpdateBtn.classList.add(className);
+                })
+                cellUpdateBtn.innerHTML = "Update";
+
+                var cellDeleteBtn = document.createElement("button");
+                var cellDeleteBtnClass = "btn btn-danger delete-btn";
+                cellDeleteBtnClass.split(' ').forEach(function (className) {
+                    cellDeleteBtn.classList.add(className);
+                })
+                cellDeleteBtn.innerHTML = "Delete";
+
+                cellActionBtns.appendChild(cellEditBtn);
+                cellActionBtns.appendChild(cellUpdateBtn);
+                cellActionBtns.appendChild(cellDeleteBtn);
+
+                for (let datakey in value) {
+                    if (datakey == "id") continue;
+                    var cell = document.createElement("td");
+                    var cellClass = "task-" + datakey;
+                    cell.classList.add(cellClass);
+                    cell.innerHTML = value[datakey];
+                    row.appendChild(cell);
+                }
+                row.appendChild(cellActionBtns);
+                //Now add all cellActionBtns to all the rows
+
+                taskbody.appendChild(row);
+
+            }
+        }
+        function addTask() {
+            // get form data
+            var taskName = document.getElementById("taskName").value;
+            var assignedTo = document.getElementById("assignedTo").value;
+            var dueDate = document.getElementById("dueDate").value;
+            var statusPending = document.getElementById("pending");
+            var statusCompleted = document.getElementById("completed");
+            var priority = document.getElementById("priority").value;
+            var formValid = false;
+
+            if (statusPending.checked) {
+                status = "pending";
+            } else if (statusCompleted.checked) {
+                status = "completed";
+            }
+            else {
+                status = "";
+            }
+
+
+            // create an associative array of the form data
+            var taskData = {
+                id: Date.now(),
+                taskName: taskName,
+                assignedTo: assignedTo,
+                dueDate: dueDate,
+                status: status,
+                priority: priority
+            };
+            // Pass the tasks data to an associative array taskDataArray
+            taskDataMap.set(taskData.id, taskData);
+
+            taskDataArray.push(taskData);
+
+            // add task data to local storage using the taskData object and function
+            addTaskToLocalStorage(taskDataArray);
+            // clear form
+            addNewTaskForm.reset();
+            // display tasks
+            if (localStorage.getItem("taskData")) {
+                taskDataArray = JSON.parse(localStorage.getItem("taskData"));
+                displayTasks(taskDataArray);
+            }
+
+        }
+
+        var taskArray = [];
+
+        function addTaskToLocalStorage(taskDataArray) {
+            console.log(taskDataArray, "taskDataArray");
+            localStorage.setItem("taskData", JSON.stringify(taskDataArray));
+            sessionStorage.setItem("taskData", JSON.stringify(taskDataArray));
+
+
+            console.log(JSON.parse(localStorage.getItem("taskData")), "localStorage");
+            console.log(JSON.parse(sessionStorage.getItem("taskData")), "sessionStorage");
+        }
+
+
+        var searchDataArray = [];
+
+        function searchTask() {
+            var searchValue = searchInput.value;
+            console.log(searchValue, "searchValue");
+            if (localStorage.getItem("taskData")) {
+                taskDataArray = JSON.parse(localStorage.getItem("taskData"));
+            }
+            taskDataArray.forEach(function (task) {
+                taskdatamap.set(task.id, task);
+            });
+
+            console.log(taskdatamap, "taskdatamap");
+            var searchResults = [];
+            var searchResultIds = [];
+            var searchdatamap = new Map();
+            for (let [Mapkey, value] of taskdatamap) {
+
+                for (let key in value) {
+                    if (value[key] == searchValue) {
+                        searchResultIds.push(Mapkey);
+                    }
+                }
+            }
+            // Create a search data array to pass into display function
+            searchResultIds.map(function (id) {
+                searchResults.push(taskdatamap.get(id));
+            })
+            searchDataArray = searchResults;
+            console.log(searchDataArray, "searchDataArray");
+            displayTasks(searchDataArray);
+            // displayTasks();
+
+        }
+
+
+
+
+        addNewTaskBtn.onclick = () => {
+            document.querySelector('.add-new-container').style.display = "block";
+            document.querySelector('.search-container').style.display = "none";
+        }
+        searchTaskBtn.onclick = () => {
+            document.querySelector('.search-container').style.display = "block";
+            document.querySelector('.add-new-container').style.display = "none";
+        }
+    </script>
+</body>
+
+</html>
