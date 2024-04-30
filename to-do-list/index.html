@@ -205,6 +205,8 @@
         var datamapsize = null;
         var tasksingle = [];
         var tasksinglesize = null;
+        var dataArray = [];
+        var searchDataArray = [];
 
 
         var taskRowError = document.querySelector(".task-row-error td");
@@ -230,19 +232,21 @@
         function displayTasks(dataArray) {
             tasksContainer.style.display = "block";
 
+            var taskdatamap = new Map();
+
             dataArray.forEach(function (task) {
                 taskdatamap.set(task.id, task);
             });
 
 
-            // console.log(taskdatamap, "taskdatamap");
+            console.log(taskdatamap, "taskdatamap");
             // replace the dummy tr td data with real data 
 
 
 
             taskbody.innerHTML = "";
             for (let [key, value] of taskdatamap) {
-                console.log(key, value);
+                console.log(key, "key", value, "values");
 
                 // Create a new row
                 var row = document.createElement("tr");
@@ -353,7 +357,7 @@
         }
 
 
-        var searchDataArray = [];
+
 
         function searchTask() {
             var searchValue = searchInput.value;
@@ -368,9 +372,7 @@
             console.log(taskdatamap, "taskdatamap");
             var searchResults = [];
             var searchResultIds = [];
-            var searchdatamap = new Map();
             for (let [Mapkey, value] of taskdatamap) {
-
                 for (let key in value) {
                     if (value[key] == searchValue) {
                         searchResultIds.push(Mapkey);
@@ -384,8 +386,6 @@
             searchDataArray = searchResults;
             console.log(searchDataArray, "searchDataArray");
             displayTasks(searchDataArray);
-            // displayTasks();
-
         }
 
 
