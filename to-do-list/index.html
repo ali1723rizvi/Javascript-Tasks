@@ -64,7 +64,7 @@
                             <button class="btn btn-outline-secondary" id="searchBtn"
                                 onclick="searchTask()">Search</button>
                             <button class="btn btn-outline-secondary" id="clearBtn"
-                                onclick="clearSearch()">Clear</button>
+                                onclick="clearSearch(this)">Clear</button>
                         </div>
                     </div>
                 </div>
@@ -270,10 +270,12 @@
 
             taskbody.innerHTML = "";
             for (let [key, value] of displaytaskdatamap) {
+
                 console.log(key, "key", value, "values");
 
-                // Create a new row
                 var row = document.createElement("tr");
+                var rowId = key;
+                row.setAttribute("id", rowId);
                 var rowClass = "task-row-" + (key);
                 row.classList.add(rowClass);
 
@@ -283,10 +285,10 @@
 
                 var cellEditBtn = document.createElement("button");
                 var cellEditBtnClass = "btn btn-primary edit-btn";
-
                 cellEditBtnClass.split(' ').forEach(function (className) {
                     cellEditBtn.classList.add(className);
                 })
+                cellEditBtn.setAttribute("onclick", "editTask(this)");
                 cellEditBtn.innerHTML = "Edit";
 
                 var cellUpdateBtn = document.createElement("button");
@@ -294,6 +296,7 @@
                 cellUpdateBtnClass.split(' ').forEach(function (className) {
                     cellUpdateBtn.classList.add(className);
                 })
+                cellUpdateBtn.setAttribute("onclick", "updateTask(this)");
                 cellUpdateBtn.innerHTML = "Update";
 
                 var cellDeleteBtn = document.createElement("button");
@@ -301,6 +304,7 @@
                 cellDeleteBtnClass.split(' ').forEach(function (className) {
                     cellDeleteBtn.classList.add(className);
                 })
+                cellDeleteBtn.setAttribute("onclick", "deleteTask(this)");
                 cellDeleteBtn.innerHTML = "Delete";
 
                 cellActionBtns.appendChild(cellEditBtn);
@@ -418,6 +422,83 @@
                 // send empty
                 displayTasks([]);
             }
+        }
+
+        function clearSearch() {
+            // reset search input
+            searchInput.value = "";
+            //hide search
+            document.querySelector('.search-container').style.display = "none";
+            displayTasks(taskDataArray);
+        }
+
+        var usabletaskDataArray = [];
+        var alltasksData = [];
+
+        function get_taskData() {
+            if (localStorage.getItem("taskData")) {
+                usabletaskDataArray = JSON.parse(localStorage.getItem("taskData"));
+            }
+            console.log(usabletaskDataArray, "usabletaskDataArray");
+            return usabletaskDataArray;
+        }
+
+        function editTask(curr_ele) {
+            var parentElementId = curr_ele.parentElement.parentElement.id;
+            console.log(parentElementId, "My parent ID");
+
+            alltasksData = get_taskData();
+
+            console.log(alltasksData, "taskData");
+            //prepare data for edit
+            var currentTaskDataArray = alltasksData.filter(function (task) {
+                return task.id == parentElementId;
+            });
+            console.log(currentTaskDataArray, "currentTaskData");
+
+            var currentTaskData = currentTaskDataArray[0];
+
+            var currentTaskName = currentTaskData.taskName;
+            var currentAssignedTo = currentTaskData.assignedTo;
+            var currentDueDate = currentTaskData.dueDate;
+            var currentStatus = currentTaskData.status;
+            var currentPriority = currentTaskData.priority;
+
+            // set the form values
+            taskName.value = currentTaskName;
+            assignedTo.value = currentAssignedTo;
+            dueDate.value = currentDueDate;
+            if (currentStatus == "pending") {
+                statusPending.checked = true;
+            }
+            else if (currentStatus == "completed") {
+                statusCompleted.checked = true;
+            }
+            else {
+                statusPending.checked = false;
+                statusCompleted.checked = false;
+            }
+            priority.value = currentPriority;
+
+
+            document.querySelector('.add-new-container p').innerHTML = "Edit Task";
+
+
+
+            document.querySelector('.add-new-container').style.display = "block";
+
+            // get the task data
+
+
+            var edittaskeading = document.querySelector('.add-new-container p').innerHTML;
+
+            console.log(edittaskeading, "edittaskeading");
+
+
+
+
+
+
         }
 
 
