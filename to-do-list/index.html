@@ -223,7 +223,6 @@
         // Define Functions
 
         function cancelTask() {
-            addNewTaskForm.style.display = "none";
             document.querySelector('.add-new-container').style.display = "block";
             // clear form
             addNewTaskForm.reset();
@@ -458,6 +457,7 @@
 
             var currentTaskData = currentTaskDataArray[0];
 
+            var currentTaskId = currentTaskData.id;
             var currentTaskName = currentTaskData.taskName;
             var currentAssignedTo = currentTaskData.assignedTo;
             var currentDueDate = currentTaskData.dueDate;
@@ -480,11 +480,39 @@
             }
             priority.value = currentPriority;
 
+            //new values if changed
 
+
+            //change the add task form to edit task form
             document.querySelector('.add-new-container p').innerHTML = "Edit Task";
 
+            //create hidden field for ID
 
+            var hiddenField = document.createElement("input");
 
+            hiddenField.setAttribute("type", "hidden");
+
+            hiddenField.setAttribute("value", currentTaskId);
+
+            document.querySelector('.add-new-container form').prependChild(hiddenField);
+            // give classes and ID to the hidden field
+
+            hiddenField.setAttribute("class", "form-control hidden");
+            hiddenField.setAttribute("id", "taskId");
+
+            //change add task button to update task button
+            var updateButton = document.getElementById('addTaskBtn');
+
+            updateButton.innerText = "Update Task";
+            updateButton.setAttribute("onclick", "updateTask()");
+            updateButton.setAttribute("id", "updateTaskBtn");
+
+            //change cancel button
+
+            var cancelButton = document.getElementById('cancelBtn');
+
+            cancelButton.setAttribute("onclick", "cancelTask()");
+            cancelButton.setAttribute("id", "cancelUpdateBtn");
             document.querySelector('.add-new-container').style.display = "block";
 
             // get the task data
@@ -493,14 +521,34 @@
             var edittaskeading = document.querySelector('.add-new-container p').innerHTML;
 
             console.log(edittaskeading, "edittaskeading");
-
-
-
-
-
-
         }
 
+        function updateTask() {
+            //get new values from the input fields if their value is changed
+            var taskId = document.getElementById("taskId").value;
+            var newTaskName = taskName.value;
+            var newAssignedTo = assignedTo.value;
+            var newDueDate = dueDate.value;
+            var newStatus = status.value;
+            var newPriority = priority.value;
+
+            //get the data from the local
+            alltasksData = get_taskData();
+            console.log(alltasksData, "alltasksData");
+
+
+
+            console.log(oldTaskDataArray, "oldTaskDataArray");
+
+            var oldTaskData = oldTaskDataArray[0];
+
+            // oldTaskData.taskName = newTaskName;
+            // oldTaskData.assignedTo = newAssignedTo;
+            // oldTaskData.dueDate = newDueDate;
+            // oldTaskData.status = newStatus;
+            // oldTaskData.priority = newPriority;
+
+        }
 
 
 
@@ -512,6 +560,7 @@
             document.querySelector('.search-container').style.display = "block";
             document.querySelector('.add-new-container').style.display = "none";
         }
+
     </script>
 </body>
 
