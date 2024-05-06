@@ -4,27 +4,25 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>To Do List</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <title>To Do List</title>
+    
 </head>
 
 <body>
-    <!-- create a to do list using ES6 only, no jQuery, and save load and display data from local storage -->
-    <!-- use localStorage to save and load data -->
-
     <div class="todo-list-container container">
         <div class="heading-container text-center my-4">
             <h1>To Do List</h1>
         </div>
         <div class="add-or-search-list-input-container">
             <div class="row">
-                <div class="col-md-12 btns-container d-flex justify-content-center">
+                <div class="col-md-12 btns-container d-flex justify-content-center mb-3">
                     <button type="button" onclick="showAddTaskForm()" id="addNewTaskBtn"
                         class="btn btn-primary mx-2">Add New Task</button>
                     <button type="button" onclick="showSearchTaskForm()" id="searchTaskBtn"
                         class="btn btn-secondary mx-2">Search Task</button>
                 </div>
-                <div class="filter-container col-md-12">
+                <div class="filter-container col-md-12" style="display: none;">
                     <p>Filter by: </p>
                     <div class="row">
                         <div class="col-md-4">
@@ -54,7 +52,6 @@
             </div>
 
         </div>
-
         <div class="tasks-container" id="tasksContainer">
             <div class="search-container" style="display: none;">
                 <div class="form-group">
@@ -114,8 +111,7 @@
                             onclick="cancelTask()">Cancel</button>
                     </div>
                 </form>
-            </div>
-            <!-- Tasks will be dynamically added here -->
+            </div>           
             <div class="view-results-container">
                 <div class="task-view" id="taskView">
                     <table id="tasksTable" class="table table-striped table-hover">
@@ -129,8 +125,7 @@
                                 <th>Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <!-- Task rows will be dynamically added here -->
+                        <tbody>      
                             <tr class="task-row-1">
                                 <td class="task-name"></td>
                                 <td class="task-assigned-to"></td>
@@ -155,23 +150,26 @@
     </div>
 
     <script>
-        //Create Vairables
+        
+        const addNewTaskContainer = document.querySelector('.add-new-container').innerHTML;
+        
 
-        // Buttons for Add New Task and Search
+        
         var addNewTaskBtn = document.getElementById("addNewTaskBtn");
         var searchTaskBtn = document.getElementById("searchTaskBtn");
 
-        // Variable for filters
+        
         var filterStatus = document.getElementById("filterStatus");
         var filterSort = document.getElementById("filterSort");
         var filterPriority = document.getElementById("filterPriority");
 
-        // Variables for Search Form
+        
         var searchInput = document.getElementById("searchInput");
         var searchBtn = document.getElementById("searchBtn");
         var clearBtn = document.getElementById("clearBtn");
 
-        // Variables for Add New Task Form
+        
+        
         var addNewTaskForm = document.getElementById("addNewTaskForm");
         var taskName = document.getElementById("taskName");
         var assignedTo = document.getElementById("assignedTo");
@@ -213,18 +211,18 @@
 
         var taskdatamap = new Map();
 
-        // If results in LocalStorage, get them and display them
+        
         document.addEventListener("DOMContentLoaded", function () {
             if (localStorage.getItem("taskData")) {
                 taskDataArray = JSON.parse(localStorage.getItem("taskData"));
                 displayTasks(taskDataArray);
             }
         });
-        // Define Functions
+        
 
         function cancelTask() {
-            document.querySelector('.add-new-container').style.display = "block";
-            // clear form
+            document.querySelector('.add-new-container').style.display = "none";
+            
             addNewTaskForm.reset();
         }
 
@@ -233,11 +231,11 @@
 
             if (dataArray.length == 0) {
                 taskbody.innerHTML = "";
-                // Create Error Row and exit the function
+                
                 var errorRow = document.createElement("tr");
                 errorRow.classList.add("task-row-error");
                 var errorCell = document.createElement("td");
-                // maximum colspan
+                
                 errorCell.colSpan = "6";
                 errorCell.classList.add("text-center");
                 errorCell.innerHTML = "No Records found";
@@ -247,12 +245,12 @@
 
                 errorRow.appendChild(errorCell);
                 taskbody.appendChild(errorRow);
-                console.log("No tasks found");
+                
 
                 return;
             } else {
                 var datacount = dataArray.length;
-                console.log(dataArray, datacount + " tasks found in displayTasks");
+                
             }
 
             var displaytaskdatamap = new Map();
@@ -262,15 +260,15 @@
             });
 
 
-            console.log(displaytaskdatamap, "displaytaskdatamap");
-            // replace the dummy tr td data with real data 
+            
+            
 
 
 
             taskbody.innerHTML = "";
             for (let [key, value] of displaytaskdatamap) {
 
-                console.log(key, "key", value, "values");
+                
 
                 var row = document.createElement("tr");
                 var rowId = key;
@@ -290,14 +288,6 @@
                 cellEditBtn.setAttribute("onclick", "editTask(this)");
                 cellEditBtn.innerHTML = "Edit";
 
-                var cellUpdateBtn = document.createElement("button");
-                var cellUpdateBtnClass = "btn btn-success update-btn";
-                cellUpdateBtnClass.split(' ').forEach(function (className) {
-                    cellUpdateBtn.classList.add(className);
-                })
-                cellUpdateBtn.setAttribute("onclick", "updateTask(this)");
-                cellUpdateBtn.innerHTML = "Update";
-
                 var cellDeleteBtn = document.createElement("button");
                 var cellDeleteBtnClass = "btn btn-danger delete-btn";
                 cellDeleteBtnClass.split(' ').forEach(function (className) {
@@ -307,7 +297,6 @@
                 cellDeleteBtn.innerHTML = "Delete";
 
                 cellActionBtns.appendChild(cellEditBtn);
-                cellActionBtns.appendChild(cellUpdateBtn);
                 cellActionBtns.appendChild(cellDeleteBtn);
 
                 for (let datakey in value) {
@@ -319,14 +308,14 @@
                     row.appendChild(cell);
                 }
                 row.appendChild(cellActionBtns);
-                //Now add all cellActionBtns to all the rows
+                
 
                 taskbody.appendChild(row);
 
             }
         }
         function addTask() {
-            // get form data
+            
             var taskName = document.getElementById("taskName").value;
             var assignedTo = document.getElementById("assignedTo").value;
             var dueDate = document.getElementById("dueDate").value;
@@ -345,7 +334,7 @@
             }
 
 
-            // create an associative array of the form data
+            
             var taskData = {
                 id: Date.now(),
                 taskName: taskName,
@@ -354,16 +343,16 @@
                 status: status,
                 priority: priority
             };
-            // Pass the tasks data to an associative array taskDataArray
+            
             taskDataMap.set(taskData.id, taskData);
 
             taskDataArray.push(taskData);
 
-            // add task data to local storage using the taskData object and function
+            
             addTaskToLocalStorage(taskDataArray);
-            // clear form
+            
             addNewTaskForm.reset();
-            // display tasks
+            
             if (localStorage.getItem("taskData")) {
                 taskDataArray = JSON.parse(localStorage.getItem("taskData"));
                 displayTasks(taskDataArray);
@@ -374,13 +363,13 @@
         var taskArray = [];
 
         function addTaskToLocalStorage(taskDataArray) {
-            console.log(taskDataArray, "taskDataArray");
+            
             localStorage.setItem("taskData", JSON.stringify(taskDataArray));
             sessionStorage.setItem("taskData", JSON.stringify(taskDataArray));
 
 
-            console.log(JSON.parse(localStorage.getItem("taskData")), "localStorage");
-            console.log(JSON.parse(sessionStorage.getItem("taskData")), "sessionStorage");
+            
+            
         }
 
 
@@ -389,7 +378,7 @@
         function searchTask() {
             var found = false;
             var searchValue = searchInput.value;
-            console.log(searchValue, "searchValue");
+            
             if (localStorage.getItem("taskData")) {
                 taskDataArray = JSON.parse(localStorage.getItem("taskData"));
             }
@@ -397,7 +386,7 @@
                 taskdatamap.set(task.id, task);
             });
 
-            console.log(taskdatamap, "taskdatamap");
+            
             var searchResults = [];
             var searchResultIds = [];
             for (let [Mapkey, value] of taskdatamap) {
@@ -408,25 +397,25 @@
                     }
                 }
             }
-            // Create a search data array to pass into display function
+            
             searchResultIds.map(function (id) {
                 searchResults.push(taskdatamap.get(id));
             })
             searchDataArray = searchResults;
-            console.log(searchDataArray, "searchDataArray");
+            
             if (found) {
                 displayTasks(searchDataArray);
             }
             else {
-                // send empty
+                
                 displayTasks([]);
             }
         }
 
         function clearSearch() {
-            // reset search input
+            
             searchInput.value = "";
-            //hide search
+            
             document.querySelector('.search-container').style.display = "none";
             displayTasks(taskDataArray);
         }
@@ -438,22 +427,22 @@
             if (localStorage.getItem("taskData")) {
                 usabletaskDataArray = JSON.parse(localStorage.getItem("taskData"));
             }
-            console.log(usabletaskDataArray, "usabletaskDataArray");
+            
             return usabletaskDataArray;
         }
 
         function editTask(curr_ele) {
             var parentElementId = curr_ele.parentElement.parentElement.id;
-            console.log(parentElementId, "My parent ID");
+            
 
             alltasksData = get_taskData();
 
-            console.log(alltasksData, "taskData");
-            //prepare data for edit
+            
+            
             var currentTaskDataArray = alltasksData.filter(function (task) {
                 return task.id == parentElementId;
             });
-            console.log(currentTaskDataArray, "currentTaskData");
+            
 
             var currentTaskData = currentTaskDataArray[0];
 
@@ -464,7 +453,7 @@
             var currentStatus = currentTaskData.status;
             var currentPriority = currentTaskData.priority;
 
-            // set the form values
+            
             taskName.value = currentTaskName;
             assignedTo.value = currentAssignedTo;
             dueDate.value = currentDueDate;
@@ -480,13 +469,13 @@
             }
             priority.value = currentPriority;
 
-            //new values if changed
+            
 
 
-            //change the add task form to edit task form
+            
             document.querySelector('.add-new-container p').innerHTML = "Edit Task";
 
-            //create hidden field for ID
+            
 
             var hiddenField = document.createElement("input");
 
@@ -494,65 +483,127 @@
 
             hiddenField.setAttribute("value", currentTaskId);
 
-            document.querySelector('.add-new-container form').prependChild(hiddenField);
-            // give classes and ID to the hidden field
+            document.querySelector('.add-new-container form').prepend(hiddenField);
+            
 
             hiddenField.setAttribute("class", "form-control hidden");
             hiddenField.setAttribute("id", "taskId");
 
-            //change add task button to update task button
+            
             var updateButton = document.getElementById('addTaskBtn');
 
-            updateButton.innerText = "Update Task";
-            updateButton.setAttribute("onclick", "updateTask()");
+            if(updateButton){
+                updateButton.innerText = "Update Task";
+                updateButton.setAttribute("onclick", "updateTask()");
             updateButton.setAttribute("id", "updateTaskBtn");
+            }
+            
 
-            //change cancel button
+            
 
             var cancelButton = document.getElementById('cancelBtn');
 
+            if(cancelButton){
+
             cancelButton.setAttribute("onclick", "cancelTask()");
             cancelButton.setAttribute("id", "cancelUpdateBtn");
-            document.querySelector('.add-new-container').style.display = "block";
-
-            // get the task data
+            }
+            
 
 
             var edittaskeading = document.querySelector('.add-new-container p').innerHTML;
+            document.querySelector('.add-new-container').style.display = "block";
 
-            console.log(edittaskeading, "edittaskeading");
+            
         }
 
         function updateTask() {
-            //get new values from the input fields if their value is changed
+            
             var taskId = document.getElementById("taskId").value;
             var newTaskName = taskName.value;
             var newAssignedTo = assignedTo.value;
             var newDueDate = dueDate.value;
-            var newStatus = status.value;
+            if(statusPending.checked){
+                status = statusPending.value;
+            }
+            else{
+                status = statusCompleted.value;
+            }
+            var newStatus = status;
             var newPriority = priority.value;
 
-            //get the data from the local
+            
             alltasksData = get_taskData();
-            console.log(alltasksData, "alltasksData");
+            
+
+            var oldTaskDataArray = alltasksData.filter(function (task) {
+                return task.id == taskId;
+            });
+
+            var newTaskData = {
+                id: taskId,
+                taskName: newTaskName,
+                assignedTo: newAssignedTo,
+                dueDate: newDueDate,
+                status: newStatus,
+                priority: newPriority
+            };
+            
 
 
-
-            console.log(oldTaskDataArray, "oldTaskDataArray");
+            
 
             var oldTaskData = oldTaskDataArray[0];
 
-            // oldTaskData.taskName = newTaskName;
-            // oldTaskData.assignedTo = newAssignedTo;
-            // oldTaskData.dueDate = newDueDate;
-            // oldTaskData.status = newStatus;
-            // oldTaskData.priority = newPriority;
+            
+            var index = alltasksData.indexOf(oldTaskData);
+            alltasksData[index] = newTaskData;
+            
+
+            
+            localStorage.setItem("taskData", JSON.stringify(alltasksData));
+            displayTasks(alltasksData);
+        }
+        function deleteTask(curr_ele){
+            var parentElementId = curr_ele.parentElement.parentElement.id;
+            
+
+            alltasksData = get_taskData();
+
+            
+            
+            var currentTaskDataArray = alltasksData.filter(function (task) {
+                return task.id == parentElementId;
+            });
+            
+
+            var currentTaskData = currentTaskDataArray[0];
+
+            var currentTaskId = currentTaskData.id;
+            var currentTaskName = currentTaskData.taskName;
+            var currentAssignedTo = currentTaskData.assignedTo;
+            var currentDueDate = currentTaskData.dueDate;
+            var currentStatus = currentTaskData.status;
+            var currentPriority = currentTaskData.priority;
+
+            
+            var index = alltasksData.indexOf(currentTaskData);
+            alltasksData.splice(index, 1);
+            
+
+            
+            localStorage.setItem("taskData", JSON.stringify(alltasksData));
+            displayTasks(alltasksData);
 
         }
 
 
 
+
+
         addNewTaskBtn.onclick = () => {
+            
+            document.querySelector('.add-new-container').innerHTML = addNewTaskContainer;
             document.querySelector('.add-new-container').style.display = "block";
             document.querySelector('.search-container').style.display = "none";
         }
