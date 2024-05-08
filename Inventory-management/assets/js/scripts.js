@@ -48,7 +48,6 @@ jQuery(document).ready(function ($) {
         officeInventoryData = JSON.parse(localStorage.getItem('officeInventory'));
         officeInventoryData.item_array.forEach(function (item) {
             console.log(item);
-            //get array index
             var curr_post = officeInventoryData.item_array.indexOf(item);
             mainDisplayHtml += '<li class="item-'+ curr_post +' hide"></li> <li class="item-name">' + item.name + '</li><li class="item-type">' + item.type + '</li><li class="item-quantity">' + item.quantity + '</li>';
             mainDisplayList.html(mainDisplayHtml);
@@ -64,6 +63,11 @@ jQuery(document).ready(function ($) {
             requestDisplayHtml += '<li class="item-'+ curr_post +' hide"></li> <li class="item-name">' + item.name + '</li><li class="item-type">' + item.type + '</li><li class="item-quantity">' + item.quantity + '</li><li class="assigned-to">' + item.assignedTo + '</li><li class="due-date">' + item.dueDate + '</li>';
             requestDisplayList.html(requestDisplayHtml);
         })
+    }
+
+    //populate request form name field and quantity
+    if(officeInventoryData){
+        
     }
     
 
