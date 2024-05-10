@@ -67,7 +67,7 @@ jQuery(document).ready(function ($) {
 
     //populate request form name field and quantity
     if(officeInventoryData){
-        
+        officeInventoryData = JSON.parse(localStorage.getItem('officeInventory'));
     }
     
 
